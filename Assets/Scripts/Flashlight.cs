@@ -2,10 +2,8 @@ using UnityEngine;
 
 public class Flashlight : MonoBehaviour
 {
-    [Header("Параметры плавности")]
-    [SerializeField] private float _horizontalSmoothSpeed = 4f;  // Скорость плавности по горизонтали (Y)
-    [SerializeField] private float _verticalSmoothSpeed = 4f;    // Скорость плавности по вертикали (X)
-    [SerializeField] private float _positionSmoothSpeed = 4f;    // Скорость плавности позиции
+    [Header("Параметры плавности")] 
+    [SerializeField] private float _smoothSpeed = 8;   // Скорость плавности поворота фонарика
 
     private Vector3 _offsetFromCamera;           // Смещение фонарика от камеры
     private GameObject _followTarget;            // Объект, за которым следует фонарик (камера)
@@ -35,8 +33,8 @@ public class Flashlight : MonoBehaviour
         _targetPitch = eulerAngles.x;
 
         // Плавно интерполируем углы
-        _currentYaw = Mathf.LerpAngle(_currentYaw, _targetYaw, _horizontalSmoothSpeed * Time.deltaTime);
-        _currentPitch = Mathf.LerpAngle(_currentPitch, _targetPitch, _verticalSmoothSpeed * Time.deltaTime);
+        _currentYaw = Mathf.LerpAngle(_currentYaw, _targetYaw, _smoothSpeed * Time.deltaTime);
+        _currentPitch = Mathf.LerpAngle(_currentPitch, _targetPitch, _smoothSpeed * Time.deltaTime);
 
         // Применяем новые углы
         Quaternion newRotation = Quaternion.Euler(_currentPitch, _currentYaw, 0);
@@ -44,6 +42,6 @@ public class Flashlight : MonoBehaviour
 
         // Плавное движение позиции
         Vector3 desiredPosition = _followTarget.transform.position + _offsetFromCamera;
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, _positionSmoothSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, _smoothSpeed * Time.deltaTime);
     }
 }
