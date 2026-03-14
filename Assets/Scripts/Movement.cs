@@ -1,3 +1,4 @@
+using BezierSolution;
 using UnityEngine;
 
 public class SimpleFPSMovement : MonoBehaviour
@@ -9,6 +10,9 @@ public class SimpleFPSMovement : MonoBehaviour
     
     [Header("Компоненты")]
     [SerializeField] private Camera _playerCamera;
+
+    public BezierWalkerWithSpeed _bezierWalker;
+    public BezierSpline _spline;
     
     private float _verticalRotation = 0f;
     
@@ -46,14 +50,36 @@ public class SimpleFPSMovement : MonoBehaviour
     
     private void HandleMovement()
     {
-        // Получаем ввод с клавиатуры
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        if (_spline == null)
+        {
+            // Получаем ввод с клавиатуры
+            float horizontal = Input.GetAxis("Horizontal");
+            float vertical = Input.GetAxis("Vertical");
         
-        // Вычисляем вектор движения
-        Vector3 moveDirection = (transform.right * horizontal + transform.forward * vertical).normalized;
+            // Вычисляем вектор движения
+            Vector3 moveDirection = (transform.right * horizontal + transform.forward * vertical).normalized;
         
-        // Перемещаем игрока
-        transform.position += moveDirection * _moveSpeed * Time.deltaTime;
+            // Перемещаем игрока
+            transform.position += moveDirection * _moveSpeed * Time.deltaTime;
+        }
+        else
+        {
+            if (Input.GetAxis("Vertical") > 0)
+            {
+                _bezierWalker.speed = Input.GetAxis("Vertical"); // * Time.deltaTime;
+            }
+
+            if (_bezierWalker.NormalizedT == 1)
+            {
+                _bezierWalker.NormalizedT = 0;
+                _spline = null;
+                _bezierWalker.spline = null;
+            }
+        }
+    }
+
+    public void SetSpline(BezierSpline spline)
+    {
+        _spline = spline;
     }
 }
